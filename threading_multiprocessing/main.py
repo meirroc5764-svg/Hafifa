@@ -33,13 +33,12 @@ def result_list(results):
 def percentage_change_calculate(new_price, old_price): 
     return (new_price - old_price) / old_price * 100
 
-def prices_history(libary, start, end):
+def prices_history(libary):
     for attempt in range(3):
         try:
             return yf.Ticker(libary).history(
-                start=start,
-                end=end,
-                interval="1h"
+            period="max",
+            interval="1h"
             )
         except yf_exceptions.YFRateLimitError:
             if attempt == 2:
@@ -76,54 +75,51 @@ def running_program(company):
 
         
         dates_list = [line.strip() for line in dates.splitlines() if line.strip()]
+
+        taming_data_price = prices_history(libarys[company])
+
+        if taming_data_price.empty:
+            print(f"No price data for {company} at {date}")
+            return results
         
-        for date in dates_list:
+        else:
+            for date in dates_list:
 
-            try:
-                date = pd.Timestamp(date, tz="UTC")
+                try:
+                    date = pd.Timestamp(date, tz="UTC")
+                
+                except ValueError:
+                    print(f"Skipping invalid date in {company}: {date!r}")
+                    continue
             
-            except ValueError:
-                print(f"Skipping invalid date in {company}: {date!r}")
-                continue
+
+                
             
-            time_end = date + timedelta(hours=1)
-            previos_hour = date - timedelta(hours=1)
-
-            taming_data_price = prices_history(libarys[company], previos_hour, time_end)
-
-
-            if taming_data_price.empty:
-                print(f"No price data for {company} at {date}")
-                continue
-
-           
-            # Find the closest available price at or before each requested time.
-            old_prices = taming_data_price.loc[
-                taming_data_price.index <= previos_hour, "Close"]
-            
-            new_prices = taming_data_price.loc[
-                taming_data_price.index <= date, "Close"
-            ]
-
-            if old_prices.empty or new_prices.empty:
-                print(f"Missing prices for {company} at {date}")
-                continue
-
-            old_price = old_prices.iloc[-1]
-            new_price = new_prices.iloc[-1]
+                # Find the closest available price at or before each requested time.          
+                new_prices = taming_data_price.loc[
+                    taming_data_price.index <= date, "Close"
+                ]
 
 
-            percentage_change = percentage_change_calculate(new_price, old_price)
+                # if new price it first inposooble to be old price
+                if len(new_prices) < 2:
+                    print(f"Not enough price data for {company} at {date}")
+                    continue
 
-            json_to_csv = {
-                "hour": date,
-                "stock_type": libarys[company],
-                "percentage_change": percentage_change
-            }
+                old_price = new_prices.iloc[-2]
+                new_price = new_prices.iloc[-1]
 
-            results.append(json_to_csv)
+                percentage_change = percentage_change_calculate(new_price, old_price)
 
-    return results
+                json_to_csv = {
+                    "hour": date,
+                    "stock_type": libarys[company],
+                    "percentage_change": percentage_change
+                }
+
+                results.append(json_to_csv)
+
+        return results
 
 def main():
     with ThreadPoolExecutor(max_workers=3) as executor:
