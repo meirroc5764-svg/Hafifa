@@ -129,6 +129,7 @@ def running_program(company):
         return results
 
 def main():
+    # open thre trehads his work thogeder 
     with ThreadPoolExecutor(max_workers=3) as executor:
         results = list(executor.map(running_program, COMPANY_DATES))
 
