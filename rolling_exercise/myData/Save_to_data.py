@@ -1,0 +1,27 @@
+from sqlalchemy import insert
+
+from myData.data_connect import engine, air_quality, alert
+
+
+def insert_all_data(df):
+    records = df.to_dict(orient="records")
+
+    with engine.begin() as connection:
+        connection.execute(
+            insert(air_quality),
+            records
+        )
+
+    print(f"Inserted {len(records)} records successfully!")
+
+
+def insert_alert(df):
+    records = df.to_dict(orient="records")
+
+    with engine.begin() as connection:
+        connection.execute(
+            insert(alert),
+            records
+        )
+
+    print(f"Inserted {len(records)} records successfully!")
