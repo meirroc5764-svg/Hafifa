@@ -8,12 +8,12 @@ import csv
 import io
 
 
-router = APIRouter(
+file_read_router = APIRouter(
     prefix="/read",
     tags=["Read_data_file"]
 )
 
-@router.post("/upload_csv")
+@file_read_router.post("/upload_csv")
 async def upload_file(file: UploadFile = File(...)):
 
     content = await file.read()
