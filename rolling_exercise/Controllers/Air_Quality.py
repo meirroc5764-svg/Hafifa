@@ -6,7 +6,7 @@ from datetime import date
 
 
 air_quality_router = APIRouter(
-    prefix="/air quality",
+    prefix="/air-quality",
     tags=["Air Quality"]
 )
 
@@ -39,4 +39,23 @@ async def get_air_quality(
             detail=f"Database error: {str(error)}"
         )
 
+@air_quality_router.get("/city")
+async def get_air_quality_by_city(city: str):
 
+    query = select(air_quality).where(
+            air_quality.c.city == city
+        )
+
+    try:
+        with engine.connect() as connection:
+            result = connection.execute(query)
+            rows = result.mappings().all()
+    
+            return [dict(row) for row in rows]
+    
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Database error: {str(error)}"
+        )
+    

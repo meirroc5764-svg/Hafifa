@@ -33,7 +33,7 @@ air_quality = Table(
 )
 
 alert = Table(
-    "alert",
+    "alerts",
     metadata,
     
     Column("id", Integer, primary_key=True, autoincrement=True),
@@ -41,6 +41,7 @@ alert = Table(
     Column("city", String(100)),
     Column("AQI", Integer)
 )
+
 
 def create_tables():
     metadata.create_all(engine)

@@ -4,7 +4,6 @@ from myData.Save_to_data import insert_all_data, insert_alert
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import uvicorn
 import pandas as pd
-import csv
 import io
 
 
@@ -22,7 +21,7 @@ async def upload_file(file: UploadFile = File(...)):
     df = master_validator(df)
 
     if df.empty:
-        return HTTPException(status_code=500, detail = "invalid data")
+        raise HTTPException(status_code=500, detail = "invalid data")
 
     df["AQI"] = df.apply(
         lambda row: calculate_aqi(
@@ -33,15 +32,13 @@ async def upload_file(file: UploadFile = File(...)):
         axis=1
     )
 
-    df["AQI"] = pd.to_numeric(df["AQI"], errors="coerce")
+    df["AQI"] = pd.to_numeric(df["AQI"], errors="coerce").fillna(500)    
     
     # Filter dangerous measurements
     alerts_df = df[df["AQI"] > 300]
 
-    # Filter normal measurements
-    normal_df = df[df["AQI"] <= 300]
 
-    insert_all_data(normal_df)
+    insert_all_data(df)
 
     if not alerts_df.empty:
         insert_alert(alerts_df)
