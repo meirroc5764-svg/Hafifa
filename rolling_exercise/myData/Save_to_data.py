@@ -17,6 +17,7 @@ def insert_all_data(df):
 
 def insert_alert(df):
     records = df.to_dict(orient="records")
+ 
 
     with engine.begin() as connection:
         connection.execute(
