@@ -1,6 +1,8 @@
-from sqlalchemy import  MetaData, Table, Column, Integer, String, Float, Date
+from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Date
 from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy import text
 from dotenv import load_dotenv
+from logger import logger
 import os
 
 
@@ -16,6 +18,7 @@ DATABASE_URL = (
     f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}"
     f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
+
 engine = create_async_engine(DATABASE_URL)
 
 metadata = MetaData()
@@ -36,7 +39,7 @@ air_quality = Table(
 alert = Table(
     "alerts",
     metadata,
-    
+
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("date", Date),
     Column("city", String(100)),
@@ -44,14 +47,27 @@ alert = Table(
 )
 
 
-def create_tables():
-    metadata.create_all(engine)
+async def create_tables():
+    try:
+        logger.info("Starting database table creation")
+
+        async with engine.begin() as connection:
+            await connection.run_sync(metadata.create_all)
+
+        logger.info("Database tables created successfully")
+
+    except Exception:
+        logger.exception("Failed to create database tables")
+        raise
 
 
 async def get_db():
     async with engine.connect() as connection:
         yield connection
 
+
 if __name__ == "__main__":
-    create_tables()
-    print("Tables created successfully!")
+    import asyncio
+
+    asyncio.run(create_tables())
+    logger.info("Database initialization completed")

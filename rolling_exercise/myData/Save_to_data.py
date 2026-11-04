@@ -1,33 +1,40 @@
 from sqlalchemy import insert
+from sqlalchemy.ext.asyncio import AsyncConnection
+from myData.data_connect import air_quality, alert
+from logger import logger
 
-from myData.data_connect import engine, air_quality, alert
 
-
-def insert_all_data(df):
+async def insert_all_data(connection: AsyncConnection, df):
     records = df.to_dict(orient="records")
 
     try:
-        with engine.begin() as connection:
-            connection.execute(
-                insert(air_quality),
-                records
-            )
+        logger.info(f"Starting insertion of {len(records)} air quality records")
 
-        print(f"Inserted {len(records)} records successfully!")
-    except Exception as e:
-        print(f"the exception: {e}")
+        await connection.execute(
+            insert(air_quality),
+            records
+        )
+
+        logger.info(f"Successfully inserted {len(records)} air quality records")
+
+    except Exception:
+        logger.exception("Failed to insert air quality records")
+        raise
 
 
-def insert_alert(df):
+async def insert_alert(connection: AsyncConnection, df):
     records = df.to_dict(orient="records")
- 
-    try:
-        with engine.begin() as connection:
-            connection.execute(
-                insert(alert),
-                records
-            )
 
-        print(f"Inserted {len(records)} records successfully!")
-    except Exception as e:
-        print(f"the Exeption: {e}")
+    try:
+        logger.info(f"Starting insertion of {len(records)} alert records")
+
+        await connection.execute(
+            insert(alert),
+            records
+        )
+
+        logger.info(f"Successfully inserted {len(records)} alert records")
+
+    except Exception:
+        logger.exception("Failed to insert alert records")
+        raise
