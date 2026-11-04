@@ -1,4 +1,5 @@
-from sqlalchemy import  MetaData, Table, Column, Integer, String, Float, Date, create_engine
+from sqlalchemy import  MetaData, Table, Column, Integer, String, Float, Date
+from sqlalchemy.ext.asyncio import create_async_engine
 from dotenv import load_dotenv
 import os
 
@@ -12,10 +13,10 @@ DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 
 DATABASE_URL = (
-    f"postgresql+psycopg://{DB_USER}:{DB_PASSWORD}"
+    f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}"
     f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
-engine = create_engine(DATABASE_URL)
+engine = create_async_engine(DATABASE_URL)
 
 metadata = MetaData()
 
@@ -46,6 +47,10 @@ alert = Table(
 def create_tables():
     metadata.create_all(engine)
 
+
+async def get_db():
+    async with engine.connect() as connection:
+        yield connection
 
 if __name__ == "__main__":
     create_tables()
