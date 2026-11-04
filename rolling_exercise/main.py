@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from Controllers.read_csv import file_read_router
-from Controllers.Alerts import alerts_router
-from Controllers.Air_Quality import air_quality_router
+from Routers.read_csv import file_read_router
+from Routers.Alerts import alerts_router
+from Routers.Air_Quality import air_quality_router
 from myData.data_connect import create_tables
 import uvicorn
 
