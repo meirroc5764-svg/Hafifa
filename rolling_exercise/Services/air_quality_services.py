@@ -77,8 +77,7 @@ async def get_city_aqi_average(connection: AsyncConnection, city: str):
 
     logger.info(f"Average AQI calculated for city: {city}")
 
-    return dict(row)
-
+    return dict(row) if row is not None else None
 
 async def get_best_cities(connection: AsyncConnection):
 

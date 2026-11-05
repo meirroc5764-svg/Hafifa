@@ -5,7 +5,7 @@ from datetime import date
 from myData.data_connect import get_db
 from logger import logger
 
-from Serivces.alerts_services import (
+from Services.alerts_services import (
     get_all_alerts,
     get_alerts_by_date,
     get_alerts_by_city

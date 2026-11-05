@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncConnection
 from datetime import date
 
-from Serivces.air_quality_services import (
+from Services.air_quality_services import (
     get_air_quality,
     get_air_quality_by_city,
     get_city_aqi_history,

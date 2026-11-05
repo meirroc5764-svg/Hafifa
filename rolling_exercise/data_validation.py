@@ -7,7 +7,7 @@ def master_validator(df):
     df = df.dropna(how="all")
     
     if not check_missing_columns(df):
-        return []
+        return pd.DataFrame()
     
     clean_data = check_if_invalid_or_empty_column(df)
 
@@ -34,9 +34,10 @@ def check_if_invalid_or_empty_column(df):
             logger.warning("Row %s skipped: invalid numeric values", index)
             continue
 
-        row[numeric_columns] = numeric_values
-        
-        clean_data.append(row)
+        row_data = row.to_dict()
+        row_data.update(numeric_values.to_dict())
+
+        clean_data.append(row_data)
 
     return clean_data
 

@@ -1,0 +1,22 @@
+2026-11-05 12:41:25,846 | INFO | air_quality | Getting all alerts
+2026-11-05 12:41:25,846 | INFO | air_quality | Found 2 alerts
+2026-11-05 12:41:25,850 | INFO | air_quality | Getting alerts for date: 2026-11-05
+2026-11-05 12:41:25,850 | INFO | air_quality | Found 1 alerts for date: 2026-11-05
+2026-11-05 12:41:25,854 | INFO | air_quality | Getting alerts for city: Haifa
+2026-11-05 12:41:25,854 | INFO | air_quality | Found 1 alerts for city: Haifa
+2026-11-05 12:41:25,858 | INFO | air_quality | Getting all alerts
+2026-11-05 12:41:25,858 | INFO | air_quality | Found 0 alerts
+2026-11-05 12:49:34,631 | INFO | air_quality | Getting air quality from 2026-11-01 to 2026-11-05
+2026-11-05 12:49:34,632 | INFO | air_quality | Found 2 air quality records
+2026-11-05 12:49:34,635 | INFO | air_quality | Getting air quality data for city: Haifa
+2026-11-05 12:49:34,636 | INFO | air_quality | Found 2 records for city: Haifa
+2026-11-05 12:49:34,638 | INFO | air_quality | Getting AQI history for city: Haifa
+2026-11-05 12:49:34,639 | INFO | air_quality | Found 2 AQI history records for Haifa
+2026-11-05 12:49:34,643 | INFO | air_quality | Calculating average AQI for city: Haifa
+2026-11-05 12:49:34,644 | INFO | air_quality | Average AQI calculated for city: Haifa
+2026-11-05 12:49:34,648 | INFO | air_quality | Getting top 3 cities with the lowest average AQI
+2026-11-05 12:49:34,649 | INFO | air_quality | Found 3 best cities
+2026-11-05 12:49:34,652 | INFO | air_quality | Getting air quality from 2026-11-01 to 2026-11-05
+2026-11-05 12:49:34,652 | INFO | air_quality | Found 0 air quality records
+2026-11-05 12:49:34,657 | INFO | air_quality | Calculating average AQI for city: Unknown
+2026-11-05 12:49:34,657 | INFO | air_quality | Average AQI calculated for city: Unknown
