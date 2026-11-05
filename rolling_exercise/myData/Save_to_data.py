@@ -1,3 +1,10 @@
+"""
+Database insertion services.
+
+Provides asynchronous functions for inserting air quality
+measurements and alert records into PostgreSQL.
+"""
+
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncConnection
 from myData.data_connect import air_quality, alert
@@ -5,6 +12,16 @@ from logger import logger
 
 
 async def insert_all_data(connection: AsyncConnection, df):
+    """
+    Insert air quality records into the database.
+
+    Args:
+        connection (AsyncConnection): Active SQLAlchemy database connection.
+        df (pd.DataFrame): DataFrame containing air quality measurements.
+
+    Raises:
+        Exception: If the database insertion fails.
+    """
     records = df.to_dict(orient="records")
 
     try:
@@ -23,6 +40,16 @@ async def insert_all_data(connection: AsyncConnection, df):
 
 
 async def insert_alert(connection: AsyncConnection, df):
+    """
+    Insert alert records into the database.
+
+    Args:
+        connection (AsyncConnection): Active SQLAlchemy database connection.
+        df (pd.DataFrame): DataFrame containing alert information.
+
+    Raises:
+        Exception: If the database insertion fails.
+    """
     records = df.to_dict(orient="records")
 
     try:
@@ -38,3 +65,4 @@ async def insert_alert(connection: AsyncConnection, df):
     except Exception:
         logger.exception("Failed to insert alert records")
         raise
+

@@ -1,3 +1,11 @@
+"""
+CSV upload API routes.
+
+Handles CSV file uploads, validates the data, calculates AQI values,
+identifies dangerous air quality measurements, and saves records
+and alerts to the database.
+"""
+
 from data_validation import master_validator
 from calculate_aqi import calculate_aqi
 from myData.Save_to_data import insert_all_data, insert_alert
@@ -23,6 +31,25 @@ async def upload_file(
     file: UploadFile = File(...),
     connection: AsyncConnection = Depends(get_db)
 ):
+    """
+    Upload, validate, process, and save an air quality CSV file.
+
+    Reads the uploaded CSV file, validates its contents, calculates
+    AQI values, identifies dangerous measurements, and inserts
+    the records and generated alerts into the database.
+
+    Args:
+        file (UploadFile): CSV file uploaded by the user.
+        connection (AsyncConnection): Database connection provided by FastAPI.
+
+    Returns:
+        dict: Upload summary containing the success message,
+              total number of records, and number of alerts.
+
+    Raises:
+        HTTPException: 400 if the CSV contains no valid data.
+        HTTPException: 500 if file processing or database insertion fails.
+    """
     try:
         logger.info(f"Starting CSV upload: {file.filename}")
 

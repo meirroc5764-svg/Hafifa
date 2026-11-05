@@ -1,3 +1,10 @@
+"""
+Air quality database services.
+
+Provides asynchronous database operations for retrieving air quality
+measurements, city AQI history, average AQI values, and the best cities.
+"""
+
 from myData.data_connect import air_quality
 from sqlalchemy.ext.asyncio import AsyncConnection
 from sqlalchemy import select, func
@@ -10,6 +17,17 @@ async def get_air_quality(
     start_date: date,
     end_date: date
 ):
+    """
+    Retrieve air quality records within a specified date range.
+
+    Args:
+        connection (AsyncConnection): Active database connection.
+        start_date (date): Beginning of the date range.
+        end_date (date): End of the date range.
+
+    Returns:
+        list[dict]: Air quality records within the specified date range.
+    """
     logger.info(f"Getting air quality from {start_date} to {end_date}")
 
     query = select(air_quality).where(
@@ -26,7 +44,16 @@ async def get_air_quality(
 
 
 async def get_air_quality_by_city(connection: AsyncConnection, city: str):
+    """
+    Retrieve all air quality records for a specific city.
 
+    Args:
+        connection (AsyncConnection): Active database connection.
+        city (str): Name of the city.
+
+    Returns:
+        list[dict]: Air quality records belonging to the specified city.
+    """
     logger.info(f"Getting air quality data for city: {city}")
 
     query = select(air_quality).where(
@@ -42,7 +69,16 @@ async def get_air_quality_by_city(connection: AsyncConnection, city: str):
 
 
 async def get_city_aqi_history(connection: AsyncConnection, city: str):
+    """
+    Retrieve the historical AQI measurements for a specific city.
 
+    Args:
+        connection (AsyncConnection): Active database connection.
+        city (str): Name of the city.
+
+    Returns:
+        list[dict]: AQI measurements ordered by date.
+    """
     logger.info(f"Getting AQI history for city: {city}")
 
     query = (
@@ -63,7 +99,17 @@ async def get_city_aqi_history(connection: AsyncConnection, city: str):
 
 
 async def get_city_aqi_average(connection: AsyncConnection, city: str):
+    """
+    Calculate the average AQI for a specific city.
 
+    Args:
+        connection (AsyncConnection): Active database connection.
+        city (str): Name of the city.
+
+    Returns:
+        dict | None: Dictionary containing the average AQI,
+                     or None if no result is available.
+    """
     logger.info(f"Calculating average AQI for city: {city}")
 
     query = select(
@@ -79,8 +125,18 @@ async def get_city_aqi_average(connection: AsyncConnection, city: str):
 
     return dict(row) if row is not None else None
 
-async def get_best_cities(connection: AsyncConnection):
 
+async def get_best_cities(connection: AsyncConnection):
+    """
+    Retrieve the three cities with the lowest average AQI.
+
+    Args:
+        connection (AsyncConnection): Active database connection.
+
+    Returns:
+        list[dict]: Up to three cities ordered by average AQI
+                    in ascending order.
+    """
     logger.info("Getting top 3 cities with the lowest average AQI")
 
     query = (
